@@ -8,7 +8,6 @@ const { Pool } = require('pg');
 app.use(cors());
 app.use(express.json());
 
-const { Pool } = require("pg");
 
 const pool = new Pool({
   connectionString: process.env.URL_DATABASE,
