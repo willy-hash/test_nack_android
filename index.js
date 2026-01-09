@@ -12,8 +12,10 @@ app.use(express.json());
 const connectionString = process.env.URL_DATABASE;
 
 const client = new Client({
-  connectionString: connectionString
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
+
 
 client.connect()
   .then(() => console.log('Conectado a PostgreSQL'))
@@ -25,15 +27,16 @@ app.get('/', (req, res) => {
 });
 
 // Ruta para obtener todas las cobranzas    
-app.get('/cobranzas', async (req, res) => {
+app.get("/cobranzas", async (req, res) => {
   try {
-    const result = await client.query('SELECT * FROM Cobranzas');
-    res.json(result.rows); // result.rows contiene los registros
+    const result = await client.query("SELECT * FROM cobranzas");
+    res.status(200).json(result.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener cobranzas');
+    console.error("ERROR DB:", err);
+    res.status(500).json({ error: "DB error" });
   }
 });
+
 
 
 app.listen(PORT, () => {
