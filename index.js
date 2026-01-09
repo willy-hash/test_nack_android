@@ -1,12 +1,15 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-
+const PORT = process.env.PORT || process.env.PORT || 3000;
 const { Client } = require('pg');
 
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-const connectionString = 'postgresql://postgres:5qRM6c0aiYWwOsZ8@db.xsykxfkehlbnlcpidncu.supabase.co:5432/postgres';
+
+const connectionString = process.env.URL_DATABASE;
 
 const client = new Client({
   connectionString: connectionString
@@ -17,10 +20,6 @@ client.connect()
   .catch(err => console.error('Error de conexión:', err));
  
 
-// Middleware para parsear JSON
-app.use(express.json());
-
-// Ruta de prueba
 app.get('/', (req, res) => {
   res.send('¡Hola, API en Express funcionando!');
 });
@@ -35,7 +34,6 @@ app.get('/cobranzas', async (req, res) => {
     res.status(500).send('Error al obtener cobranzas');
   }
 });
-
 
 
 app.listen(PORT, () => {
