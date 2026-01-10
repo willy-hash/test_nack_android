@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 //const { Pool } = require('pg');
 //const postgres = require('postgres');
-import { createClient } from "@supabase/supabase-js";
+const { createClient } = require('@supabase/supabase-js');
 
 
 
