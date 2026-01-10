@@ -3,21 +3,26 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 //const { Pool } = require('pg');
-const postgres = require('postgres');
+//const postgres = require('postgres');
+import { createClient } from "@supabase/supabase-js";
 
+
+
+const supabaseUrl = "https://xsykxfkehlbnlcpidncu.supabase.co";
+const supabaseKey = "sb_publishable_lm-jg3DvYYOQgirmBVhYzg_h6HFLnyr";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+        
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 
-const connectionString = "postgresql://postgres:5qRM6c0aiYWwOsZ8@db.xsykxfkehlbnlcpidncu.supabase.co:5432/postgres"
-const sql = postgres(connectionString, {
-  ssl: 'require'
-});
 
-
-
+// SUPABASE_URL="https://xsykxfkehlbnlcpidncu.supabase.co"
+// SUPABASE_KEY="sb_publishable_lm-jg3DvYYOQgirmBVhYzg_h6HFLnyr"
+        
 
 
 app.get('/', (req, res) => {
@@ -27,27 +32,13 @@ app.get('/', (req, res) => {
 // Ruta para obtener todas las cobranzas    
 app.get("/cobranzas", async (req, res) => {
     try {
-        const result = await sql`SELECT * FROM cobranzas`;
-        res.status(200).json(result);
+         const { data } = await supabase.from('Cobranzas').select('*');
+         res.status(200).json(data);
     } catch (err) {
         console.error("ERROR DB:", err);
         res.status(500).json({ error: "DB error" });
     }
 });
-
-app.get("/test-db", async (req, res) => {
-    try {
-        const r = await sql`SELECT 1`;
-        res.json({ ok: true });
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ ok: false });
-    }
-});
-
-
-console.log("DB:", process.env.URL_DATABASE);
-
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
