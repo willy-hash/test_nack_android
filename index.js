@@ -30,15 +30,18 @@ app.get('/', (req, res) => {
 });
 
 // Ruta para obtener todas las cobranzas    
-app.get("/cobranzas", async (req, res) => {
-    try {
-         const { data } = await supabase.from('Cobranzas').select('*');
-         res.status(200).json(data);
-    } catch (err) {
-        console.error("ERROR DB:", err);
-        res.status(500).json({ error: "DB error" });
-    }
+app.get('/cobranzas', async (req, res) => {
+  const { data, error } = await supabase
+    .from('cobranzas')
+    .select('*');
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
